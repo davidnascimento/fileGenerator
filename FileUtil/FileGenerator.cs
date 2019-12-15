@@ -16,10 +16,23 @@ namespace FileUtil
         public string FileName { get; }
 
         private Stopwatch _totalTime;
-        public TimeSpan TotalTime { get { return _totalTime.Elapsed; } }
+        public TimeSpan TotalTime
+        {
+            get
+            {
+                return _totalTime.Elapsed;
+            }
+        }
 
+        private Stopwatch _totalTimeInteraction;
         public int TotalInteractions { get; private set; }
-        public TimeSpan AverageTimeInteraction { get; private set; }
+        public TimeSpan TotalTimeInteraction
+        {
+            get
+            {
+                return new TimeSpan(_totalTimeInteraction.ElapsedTicks / TotalInteractions);
+            }
+        }
 
         private void WriteFile(string text)
         {
@@ -55,15 +68,26 @@ namespace FileUtil
         {
             _totalTime = new Stopwatch();
             _totalTime.Start();
+
+            _totalTimeInteraction = new Stopwatch();
             TotalInteractions = 0;
 
             var fileText = new StringBuilder();
             var buffer = new StringBuilder();
-            while (CalculateBytes(fileText.ToString()) < _maximumFileSize)
+            var length = CalculateBytes(fileText.ToString(), buffer.ToString());
+            while (length < _maximumFileSize)
             {
+                _totalTimeInteraction.Start();
                 buffer = GenerateBuffer(text);
-                fileText.Append(buffer);
-                WriteFile(buffer.ToString());
+                _totalTimeInteraction.Stop();
+
+                length = CalculateBytes(fileText.ToString(), buffer.ToString());
+                if (length <= _maximumFileSize)
+                {
+                    fileText.Append(buffer);
+                    WriteFile(buffer.ToString());
+                }
+
                 TotalInteractions++;
             }
 

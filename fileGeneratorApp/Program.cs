@@ -34,6 +34,8 @@ namespace fileGeneratorApp
 
                 if (!Directory.Exists(path))
                     Console.WriteLine("Caminho invalido, favor informar um caminho valido!");
+                else
+                    existPath = true;
             }
 
             //var fileUtil = new FileUtil.FileUtil(path);
