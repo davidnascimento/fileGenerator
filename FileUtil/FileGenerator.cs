@@ -57,7 +57,7 @@ namespace FileUtil
             _maximumBufferSize = maximumBufferSize * _oneMegaByteInBytes;
 
             Directory.CreateDirectory(_path);
-            FileName = $"\\{DateTime.Now.ToString("YYYY-MM-DD-HHmmss")}-arquivo-gerado.txt";
+            FileName = $"\\{DateTime.Now.ToString("yyyy-MM-dd-HHmmss")}-arquivo-gerado.txt";
         }
 
         /// <summary>
@@ -74,19 +74,19 @@ namespace FileUtil
 
             var fileText = new StringBuilder();
             var buffer = new StringBuilder();
-            var length = CalculateBytes(fileText.ToString(), buffer.ToString());
-            while (length < _maximumFileSize)
+            while (CalculateBytes(fileText.ToString()) < _maximumFileSize)
             {
                 _totalTimeInteraction.Start();
                 buffer = GenerateBuffer(text);
                 _totalTimeInteraction.Stop();
 
-                length = CalculateBytes(fileText.ToString(), buffer.ToString());
-                if (length <= _maximumFileSize)
+                if (CalculateBytes(fileText.ToString(), buffer.ToString()) <= _maximumFileSize)
                 {
                     fileText.Append(buffer);
                     WriteFile(buffer.ToString());
                 }
+                else
+                    break;
 
                 TotalInteractions++;
             }
@@ -103,23 +103,24 @@ namespace FileUtil
         {
             var bufferText = new StringBuilder();
             var auxBuffer = new StringBuilder(text);
-            var lengthBuffer = CalculateBytes(bufferText.ToString(), auxBuffer.ToString());
 
-            while (lengthBuffer <= _maximumBufferSize)
+            while (CalculateBytes(bufferText.ToString()) <= _maximumBufferSize)
             {
-                bufferText.Append(auxBuffer);
-                lengthBuffer = CalculateBytes(bufferText.ToString(), auxBuffer.ToString());
-
                 //Checking if it is possible to double the buffer
-                if (lengthBuffer <= _maximumBufferSize)
+                if (CalculateBytes(bufferText.ToString(), auxBuffer.ToString()) <= _maximumBufferSize)
+                {
+                    bufferText.Append(auxBuffer);
                     auxBuffer.Append(auxBuffer);
+                }
                 //Checks if it is still possible to increment the buffer
                 else if (CalculateBytes(bufferText.ToString(), text) <= _maximumBufferSize)
                 {
                     auxBuffer.Clear();
                     auxBuffer.Append(text);
-                    lengthBuffer = CalculateBytes(bufferText.ToString(), auxBuffer.ToString());
+                    bufferText.Append(auxBuffer);
                 }
+                else
+                    break;
             }
 
             return bufferText;
