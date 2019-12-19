@@ -33,15 +33,7 @@ namespace FileUtil
                 return new TimeSpan(_totalTimeInteraction.ElapsedTicks / TotalInteractions);
             }
         }
-
-        private void WriteFile(string text)
-        {
-            using (StreamWriter stream = File.AppendText(_path + FileName))
-            {
-                stream.Write(text);
-            }
-        }
-
+        
         /// <summary>
         /// Contructor
         /// </summary>
@@ -56,8 +48,7 @@ namespace FileUtil
             _maximumFileSize = maximumFileSize * _oneMegaByteInBytes;
             _maximumBufferSize = maximumBufferSize * _oneMegaByteInBytes;
 
-            Directory.CreateDirectory(_path);
-            FileName = $"\\{DateTime.Now.ToString("yyyy-MM-dd-HHmmss")}-arquivo-gerado.txt";
+            FileName = $"{DateTime.Now.ToString("yyyy-MM-dd-HHmmss")}-arquivo-gerado.txt";
         }
 
         /// <summary>
@@ -66,6 +57,9 @@ namespace FileUtil
         /// <param name="text"></param>
         public void GenerateFile(string text)
         {
+            if (!Directory.Exists(_path))
+                Directory.CreateDirectory(_path);
+
             _totalTime = new Stopwatch();
             _totalTime.Start();
 
@@ -74,21 +68,24 @@ namespace FileUtil
 
             var fileText = new StringBuilder();
             var buffer = new StringBuilder();
-            while (CalculateBytes(fileText.ToString()) < _maximumFileSize)
+            using (StreamWriter stream = File.AppendText(Path.Combine(_path, FileName)))
             {
-                _totalTimeInteraction.Start();
-                buffer = GenerateBuffer(text);
-                _totalTimeInteraction.Stop();
-
-                if (CalculateBytes(fileText.ToString(), buffer.ToString()) <= _maximumFileSize)
+                while (CalculateBytes(fileText.ToString()) < _maximumFileSize)
                 {
-                    fileText.Append(buffer);
-                    WriteFile(buffer.ToString());
-                }
-                else
-                    break;
+                    _totalTimeInteraction.Start();
+                    buffer = GenerateBuffer(text);
+                    _totalTimeInteraction.Stop();
 
-                TotalInteractions++;
+                    if (CalculateBytes(fileText.ToString(), buffer.ToString()) <= _maximumFileSize)
+                    {
+                        fileText.Append(buffer);
+                        stream.Write(buffer);
+                    }
+                    else
+                        break;
+
+                    TotalInteractions++;
+                }
             }
 
             _totalTime.Stop();
