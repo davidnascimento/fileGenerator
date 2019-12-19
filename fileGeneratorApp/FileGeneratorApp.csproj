@@ -7,5 +7,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FileUtil\FileUtil.csproj" />
+    <ProjectReference Include="..\Crawler\TextGeneratorCrawler\TextGeneratorCrawler.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="ConsoleTables" Version="2.4.0" />
   </ItemGroup>
 </Project>

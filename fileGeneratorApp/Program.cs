@@ -38,9 +38,9 @@ namespace fileGeneratorApp
                     existPath = true;
             }
 
-            //var fileUtil = new FileUtil.FileUtil(path);
-
-            //fileUtil.WriteFile("Texto");
+            var textGenerator = new TextGeneratorCrawler.TextGenerator();
+            var fileUtil = new FileUtil.FileGenerator(path, fileSize, bufferSize);
+            fileUtil.GenerateFile(textGenerator.GetText());
 
             Console.ReadKey();
         }
