@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using ByteCounterCrawler;
 
 namespace FileUtil
 {
@@ -12,7 +13,9 @@ namespace FileUtil
         readonly int _maximumFileSize;
         readonly int _maximumBufferSize;
 
-        public int FileSize { get; }
+        private ByteCounter byteCounter = new ByteCounter();
+
+        public int FileSize { get; private set; }
         public string FileName { get; }
 
         private Stopwatch _totalTime;
@@ -24,13 +27,13 @@ namespace FileUtil
             }
         }
 
-        private Stopwatch _totalTimeInteraction;
-        public int TotalInteractions { get; private set; }
-        public TimeSpan TotalTimeInteraction
+        private Stopwatch _totalTimeIterations;
+        public int TotalIterations { get; private set; }
+        public TimeSpan TotalTimeIterations
         {
             get
             {
-                return new TimeSpan(_totalTimeInteraction.ElapsedTicks / TotalInteractions);
+                return new TimeSpan(_totalTimeIterations.ElapsedTicks / TotalIterations);
             }
         }
         
@@ -60,11 +63,13 @@ namespace FileUtil
             if (!Directory.Exists(_path))
                 Directory.CreateDirectory(_path);
 
+            var length = byteCounter.Count(text);
+
             _totalTime = new Stopwatch();
             _totalTime.Start();
 
-            _totalTimeInteraction = new Stopwatch();
-            TotalInteractions = 0;
+            _totalTimeIterations = new Stopwatch();
+            TotalIterations = 0;
 
             var fileText = new StringBuilder();
             var buffer = new StringBuilder();
@@ -72,9 +77,9 @@ namespace FileUtil
             {
                 while (CalculateBytes(fileText.ToString()) < _maximumFileSize)
                 {
-                    _totalTimeInteraction.Start();
+                    _totalTimeIterations.Start();
                     buffer = GenerateBuffer(text);
-                    _totalTimeInteraction.Stop();
+                    _totalTimeIterations.Stop();
 
                     if (CalculateBytes(fileText.ToString(), buffer.ToString()) <= _maximumFileSize)
                     {
@@ -84,11 +89,12 @@ namespace FileUtil
                     else
                         break;
 
-                    TotalInteractions++;
+                    TotalIterations++;
                 }
             }
 
             _totalTime.Stop();
+            FileSize = CalculateBytes(fileText.ToString());
         }
 
         /// <summary>
