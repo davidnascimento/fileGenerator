@@ -90,22 +90,28 @@ namespace Test.FileGenerator
             //
 
             Assert.True(File.Exists(fileName1));
-            Assert.Equal(1048576, fileInfo1.Length);
+            Assert.Equal(1048576, file1.FileSize);
+            Assert.Equal(file1.FileSize, fileInfo1.Length);
 
             Assert.True(File.Exists(fileName2));
             Assert.Equal(2097152, fileInfo2.Length);
+            Assert.Equal(file2.FileSize, fileInfo2.Length);
 
             Assert.True(File.Exists(fileName3));
             Assert.Equal(2097152, fileInfo3.Length);
+            Assert.Equal(file3.FileSize, fileInfo3.Length);
 
             Assert.True(File.Exists(fileName4));
             Assert.Equal(2097152, fileInfo4.Length);
+            Assert.Equal(file4.FileSize, fileInfo4.Length);
 
             Assert.True(File.Exists(fileName5));
             Assert.Equal(0, fileInfo5.Length);
+            Assert.Equal(file5.FileSize, fileInfo5.Length);
 
             Assert.True(File.Exists(fileName6));
             Assert.Equal(2097150, fileInfo6.Length);
+            Assert.Equal(file6.FileSize, fileInfo6.Length);
 
             Directory.Delete(path1, true);
             Directory.Delete(path2, true);
