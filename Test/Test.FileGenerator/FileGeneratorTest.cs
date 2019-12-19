@@ -33,92 +33,103 @@ namespace Test.FileGenerator
             Assert.NotEmpty(bufferEven?.ToString());
             Assert.NotEmpty(bufferOdd?.ToString());
             Assert.Equal(1048576, fileUtil.CalculateBytes(bufferEven.ToString()));
-            Assert.Equal(1048572, fileUtil.CalculateBytes(bufferOdd.ToString()));           
+            Assert.Equal(1048572, fileUtil.CalculateBytes(bufferOdd.ToString()));
         }
 
         [Fact]
-        public void GenerateFile()
+        public void GenerateFileOddFileSizeAndOddBuffer()
         {
-            //Tamanho e buffer impar
-            var path1 = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "1");
-            var file1 = new FileUtil.FileGenerator(path1, 1, 1);
-            file1.GenerateFile("Desde ontem a noite a otimização de performance da renderizaco");
+            var file = new FileUtil.FileGenerator(AppDomain.CurrentDomain.BaseDirectory, 1, 1);
+            file.GenerateFile("Desde ontem a noite a otimização de performance da renderizaco");
 
-            var fileName1 = Path.Combine(path1, file1.FileName);
-            var fileInfo1 = new FileInfo(fileName1);
+            var fileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, file.FileName);
+            var fileInfo = new FileInfo(fileName);
 
-            //Tamanho e buffer par
-            var path2 = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "2");
-            var file2 = new FileUtil.FileGenerator(path2, 2, 2);
-            file2.GenerateFile("Desde ontem a noite a otimização de performance da renderizaco");
+            Assert.True(File.Exists(fileName));
+            Assert.Equal(1048576, file.FileSize);
+            Assert.Equal(file.FileSize, fileInfo.Length);
 
-            var fileName2 = Path.Combine(path2, file2.FileName);
-            var fileInfo2 = new FileInfo(fileName2);
+            File.Delete(fileName);
+        }
 
-            //Tamannho do arquivo par e buffer impar
-            var path3 = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "3");
-            var file3 = new FileUtil.FileGenerator(path3, 2, 1);
-            file3.GenerateFile("Desde ontem a noite a otimização de performance da renderizaco");
+        [Fact]
+        public void GenerateFileEvenFileSizeAndEvenBuffer()
+        {
+            var file = new FileUtil.FileGenerator(AppDomain.CurrentDomain.BaseDirectory, 2, 2);
+            file.GenerateFile("Desde ontem a noite a otimização de performance da renderizaco");
 
-            var fileName3 = Path.Combine(path3, file3.FileName);
-            var fileInfo3 = new FileInfo(fileName3);
+            var fileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, file.FileName);
+            var fileInfo = new FileInfo(fileName);
 
-            //Tamanho arquivo impar e buffer par
-            var path4 = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "4");
-            var file4 = new FileUtil.FileGenerator(path4, 3, 2);
-            file4.GenerateFile("Desde ontem a noite a otimização de performance da renderizaco");
+            Assert.True(File.Exists(fileName));
+            Assert.Equal(2097152, fileInfo.Length);
+            Assert.Equal(file.FileSize, fileInfo.Length);
 
-            var fileName4 = Path.Combine(path4, file4.FileName);
-            var fileInfo4 = new FileInfo(fileName4);
-           
-            //Buffer Maior que Arquivo
-            var path5 = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "5");
-            var file5 = new FileUtil.FileGenerator(path5, 1, 2);
-            file5.GenerateFile("Desde ontem a noite a otimização de performance da renderizaco");
+            File.Delete(fileName);
+        }
 
-            var fileName5 = Path.Combine(path5, file5.FileName);
-            var fileInfo5 = new FileInfo(fileName5);
+        [Fact]
+        public void GenerateFileEvenFileAndOddBuffer()
+        {
+            var file = new FileUtil.FileGenerator(AppDomain.CurrentDomain.BaseDirectory, 2, 1);
+            file.GenerateFile("Desde ontem a noite a otimização de performance da renderizaco");
 
-            //Buffer Impar
-            var path6 = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "6");
-            var file6 = new FileUtil.FileGenerator(path6, 2, 2);
-            file6.GenerateFile("Desde ontem a noite a otimizaç");
+            var fileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, file.FileName);
+            var fileInfo = new FileInfo(fileName);
 
-            var fileName6 = Path.Combine(path6, file6.FileName);
-            var fileInfo6 = new FileInfo(fileName6);
+            Assert.True(File.Exists(fileName));
+            Assert.Equal(2097152, fileInfo.Length);
+            Assert.Equal(file.FileSize, fileInfo.Length);
 
-            //
+            File.Delete(fileName);
+        }
 
-            Assert.True(File.Exists(fileName1));
-            Assert.Equal(1048576, file1.FileSize);
-            Assert.Equal(file1.FileSize, fileInfo1.Length);
+        [Fact]
+        public void GenerateFileOddFileSizeAndEvenBuffer()
+        {
+            var file = new FileUtil.FileGenerator(AppDomain.CurrentDomain.BaseDirectory, 3, 2);
+            file.GenerateFile("Desde ontem a noite a otimização de performance da renderizaco");
 
-            Assert.True(File.Exists(fileName2));
-            Assert.Equal(2097152, fileInfo2.Length);
-            Assert.Equal(file2.FileSize, fileInfo2.Length);
+            var fileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, file.FileName);
+            var fileInfo = new FileInfo(fileName);
 
-            Assert.True(File.Exists(fileName3));
-            Assert.Equal(2097152, fileInfo3.Length);
-            Assert.Equal(file3.FileSize, fileInfo3.Length);
+            Assert.True(File.Exists(fileName));
+            Assert.Equal(2097152, fileInfo.Length);
+            Assert.Equal(file.FileSize, fileInfo.Length);
 
-            Assert.True(File.Exists(fileName4));
-            Assert.Equal(2097152, fileInfo4.Length);
-            Assert.Equal(file4.FileSize, fileInfo4.Length);
+            File.Delete(fileName);
+        }
 
-            Assert.True(File.Exists(fileName5));
-            Assert.Equal(0, fileInfo5.Length);
-            Assert.Equal(file5.FileSize, fileInfo5.Length);
+        [Fact]
+        public void GenerateFileBufferLargerThanFileSize()
+        {
+            var file = new FileUtil.FileGenerator(AppDomain.CurrentDomain.BaseDirectory, 1, 2);
+            file.GenerateFile("Desde ontem a noite a otimização de performance da renderizaco");
 
-            Assert.True(File.Exists(fileName6));
-            Assert.Equal(2097150, fileInfo6.Length);
-            Assert.Equal(file6.FileSize, fileInfo6.Length);
+            var fileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, file.FileName);
+            var fileInfo = new FileInfo(fileName);
 
-            Directory.Delete(path1, true);
-            Directory.Delete(path2, true);
-            Directory.Delete(path3, true);
-            Directory.Delete(path4, true);
-            Directory.Delete(path5, true);
-            Directory.Delete(path6, true);
+            Assert.True(File.Exists(fileName));
+            Assert.Equal(0, fileInfo.Length);
+            Assert.Equal(file.FileSize, fileInfo.Length);
+
+            File.Delete(fileName);
+        }
+
+        [Fact]
+        public void GenerateFileWithOddTextSize()
+        {
+            var file = new FileUtil.FileGenerator(AppDomain.CurrentDomain.BaseDirectory, 2, 2);
+            file.GenerateFile("Desde ontem a noite a otimizaç");
+
+            var fileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, file.FileName);
+            var fileInfo = new FileInfo(fileName);
+
+            Assert.True(File.Exists(fileName));
+            Assert.Equal(2097150, fileInfo.Length);
+            Assert.Equal(file.FileSize, fileInfo.Length);
+
+            File.Delete(fileName);
         }
     }
 }
