@@ -18,7 +18,7 @@ namespace ByteCounterCrawler
         public ByteCounter(string url, string jsSelector)
         {
             _url = url;
-            _jsSelector = jsSelector;
+            _jsSelector = string.IsNullOrEmpty(jsSelector) ? _jsSelector : jsSelector;
         }
 
         public int Count(string text)

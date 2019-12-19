@@ -16,7 +16,7 @@ namespace TextGeneratorCrawler
         public TextGenerator(string url, string jsSelector)
         {
             _url = url;
-            _jsSelector = jsSelector;
+            _jsSelector = string.IsNullOrEmpty(jsSelector) ? _jsSelector : jsSelector;
         }
 
         public string GetText()

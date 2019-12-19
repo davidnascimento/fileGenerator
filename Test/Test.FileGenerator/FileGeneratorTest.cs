@@ -30,8 +30,6 @@ namespace Test.FileGenerator
 
             Assert.NotNull(bufferEven);
             Assert.NotNull(bufferOdd);
-            Assert.NotEmpty(bufferEven?.ToString());
-            Assert.NotEmpty(bufferOdd?.ToString());
             Assert.Equal(1048576, fileUtil.CalculateBytes(bufferEven.ToString()));
             Assert.Equal(1048572, fileUtil.CalculateBytes(bufferOdd.ToString()));
         }
