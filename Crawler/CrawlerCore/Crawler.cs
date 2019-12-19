@@ -10,7 +10,7 @@ namespace CrawlerCore
             _ = new BrowserFetcher().DownloadAsync(BrowserFetcher.DefaultRevision).Result;
         }
 
-        public T ExecuteJsCommand<T>(string url, string jsCommand)
+        protected internal T ExecuteJsCommand<T>(string url, string jsCommand)
         {
             var options = new LaunchOptions { Headless = true };
             using (var browser = Puppeteer.LaunchAsync(options).Result)
