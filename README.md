@@ -9,7 +9,7 @@ Stack
 * Puppeteer Sharp
 * Polly
 
-- The Puppeteer library was used for providing the ability to use javascript commands on the web pages and to be headless browser.
+- The Puppeteer library was used for providing the ability to use javascript commands on the web pages and to be headless browser. The Puppeteer library downloads a browser to crawler. So the first time you run the application, it may take a while
 - The choice of the Polly library was due to the ease and power of expressing fallback policy simply and clearly.
 
 # Usage
