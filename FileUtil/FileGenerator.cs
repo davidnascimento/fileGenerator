@@ -10,12 +10,12 @@ namespace FileUtil
     {
         readonly string _path;
         readonly int _oneMegaByteInBytes = 1048576;
-        readonly int _maximumFileSize;
-        readonly int _maximumBufferSize;
+        readonly long _maximumFileSize;
+        readonly long _maximumBufferSize;
 
         private ByteCounter byteCounter = new ByteCounter();
 
-        public int FileSize { get; private set; }
+        public string FileSize { get; private set; }
         public string FileName { get; }
 
         private Stopwatch _totalTime;
@@ -29,12 +29,26 @@ namespace FileUtil
 
         private Stopwatch _totalTimeIterations;
         public int TotalIterations { get; private set; }
-        public TimeSpan TotalTimeIterations
+        public TimeSpan AvgTimeIterations
         {
             get
             {
-                return new TimeSpan(_totalTimeIterations.ElapsedTicks / TotalIterations);
+                return TimeSpan.FromSeconds(_totalTimeIterations.Elapsed.TotalSeconds / TotalIterations);
             }
+        }
+
+        private string HumanizeFileSize(double bytes)
+        {
+            string[] sizes = { "B", "KB", "MB", "GB", "TB" };
+            double len = bytes;
+            int order = 0;
+            while (len >= 1024 && order < sizes.Length - 1)
+            {
+                order++;
+                len = len / 1024;
+            }
+
+            return string.Format("{0:0} {1}", len, sizes[order]);
         }
         
         /// <summary>
@@ -43,7 +57,7 @@ namespace FileUtil
         /// <param name="path">Path of file to be generated</param>
         /// <param name="maximumFileSize">Maximum file size in MB</param>
         /// <param name="maximumBufferSize">Maximun buffer size in MB</param>
-        public FileGenerator(string path, int maximumFileSize, int maximumBufferSize)
+        public FileGenerator(string path, long maximumFileSize, long maximumBufferSize)
         {
             _totalTime = new Stopwatch();
 
@@ -94,7 +108,7 @@ namespace FileUtil
             }
 
             _totalTime.Stop();
-            FileSize = CalculateBytes(fileText.ToString());
+            FileSize = HumanizeFileSize(CalculateBytes(fileText.ToString()));
         }
 
         /// <summary>
@@ -135,7 +149,7 @@ namespace FileUtil
         /// <param name="textOne"></param>
         /// <param name="textTwo"></param>
         /// <returns></returns>
-        public int CalculateBytes(string textOne, string textTwo = null)
+        public long CalculateBytes(string textOne, string textTwo = null)
         {
             return Encoding.UTF8.GetByteCount(textOne ?? string.Empty) +
                    Encoding.UTF8.GetByteCount(textTwo ?? string.Empty);

@@ -20,8 +20,6 @@ namespace CrawlerCore
                     _ = page.GoToAsync(url).Result;
                     
                     return page.EvaluateExpressionAsync<T>(jsCommand).Result;
-                    //var jsSelector = @"document.querySelector('#bytes').innerText";
-                    //Int32.TryParse(Regex.Match(innerText, @"\d+").Value, out int count);
                 }
             }
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using ConsoleTables;
 
 namespace fileGeneratorApp
 {
@@ -41,6 +42,11 @@ namespace fileGeneratorApp
             var textGenerator = new TextGeneratorCrawler.TextGenerator();
             var fileUtil = new FileUtil.FileGenerator(path, fileSize, bufferSize);
             fileUtil.GenerateFile(textGenerator.GetText());
+
+            Console.WriteLine();
+            var table = new ConsoleTable("#", "Nome", "Tamanho", "Path", "Iterações", "Tempo Total", "Tempo Médio");
+            table.AddRow("1°", fileUtil.FileName, fileUtil.FileSize, path, fileUtil.TotalIterations, fileUtil.TotalTime, fileUtil.AvgTimeIterations);
+            table.Write();
 
             Console.ReadKey();
         }
