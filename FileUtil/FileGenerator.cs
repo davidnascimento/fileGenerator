@@ -15,7 +15,14 @@ namespace FileUtil
 
         private ByteCounter byteCounter = new ByteCounter();
 
-        public string FileSize { get; private set; }
+        public long FileSizeBytes { get; private set; }
+        public string FileSize
+        {
+            get
+            {
+                return HumanizeFileSize(FileSizeBytes);
+            }
+        }
         public string FileName { get; }
 
         private Stopwatch _totalTime;
@@ -108,7 +115,7 @@ namespace FileUtil
             }
 
             _totalTime.Stop();
-            FileSize = HumanizeFileSize(CalculateBytes(fileText.ToString()));
+            FileSizeBytes = CalculateBytes(fileText.ToString());
         }
 
         /// <summary>
