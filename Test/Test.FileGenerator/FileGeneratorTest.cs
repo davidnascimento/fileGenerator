@@ -6,32 +6,29 @@ namespace Test.FileGenerator
 {
     public class FileGeneratorTest
     {
-        [Fact]
-        public void CalculateBytes()
+        [Theory]
+        [InlineData("Desde ontem a noite a otimizacao", "", 32)]
+        [InlineData("Desde ontem a noite a otimizacaoa", "Desde ontem a noite a otimizacao", 65)]
+        [InlineData("", "", 0)]
+        [InlineData(null, null, 0)]
+        public void CalculateBytes(string text1, string text2, long expected)
         {
             var fileUtil = new FileUtil.FileGenerator("", 1, 1);
-            var lengthBytes = fileUtil.CalculateBytes("Desde ontem a noite a otimizacao", "");
-            var sumSize = fileUtil.CalculateBytes("Desde ontem a noite a otimizacaoa", "Desde ontem a noite a otimizacao");
-            var emptySize = fileUtil.CalculateBytes("", "");
-            var stringNull = fileUtil.CalculateBytes(null, null);
-
-            Assert.Equal(32, lengthBytes);
-            Assert.Equal(65, sumSize);
-            Assert.Equal(0, emptySize);
-            Assert.Equal(0, stringNull);
+            var lengthBytes = fileUtil.CalculateBytes(text1, text2);
+            
+            Assert.Equal(expected, lengthBytes);
         }
 
-        [Fact]
-        public void GenerateBuffer()
+        [Theory]
+        [InlineData("Desde ontem a noite a otimização de performance da renderizaco", 1048576)]
+        [InlineData("Desde ontem a noite a otimização de performance da renderizac", 1048572)]
+        public void GenerateBuffer(string text, long expected)
         {
             var fileUtil = new FileUtil.FileGenerator("", 1, 1);
-            var bufferEven = fileUtil.GenerateBuffer("Desde ontem a noite a otimização de performance da renderizaco");
-            var bufferOdd = fileUtil.GenerateBuffer("Desde ontem a noite a otimização de performance da renderizac");
+            var buffer = fileUtil.GenerateBuffer(text);
 
-            Assert.NotNull(bufferEven);
-            Assert.NotNull(bufferOdd);
-            Assert.Equal(1048576, fileUtil.CalculateBytes(bufferEven.ToString()));
-            Assert.Equal(1048572, fileUtil.CalculateBytes(bufferOdd.ToString()));
+            Assert.NotNull(buffer);
+            Assert.Equal(expected, fileUtil.CalculateBytes(buffer.ToString()));
         }
 
         [Theory]
