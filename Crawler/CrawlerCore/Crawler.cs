@@ -7,7 +7,9 @@ namespace CrawlerCore
     {
         public Crawler()
         {
+            Console.WriteLine("Download Browser...");
             _ = new BrowserFetcher().DownloadAsync(BrowserFetcher.DefaultRevision).Result;
+            Console.WriteLine("Fim do download Browser!");
         }
 
         protected internal T ExecuteJsCommand<T>(string url, string jsCommand)
