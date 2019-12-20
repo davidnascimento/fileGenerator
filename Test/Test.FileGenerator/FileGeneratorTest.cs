@@ -41,7 +41,7 @@ namespace Test.FileGenerator
         [InlineData("Desde ontem a noite a otimização de performance da renderizaco", 3, 2, 2097152)]
         [InlineData("Desde ontem a noite a otimização de performance da renderizaco", 1, 2, 0)]
         [InlineData("Desde ontem a noite a otimizaç", 2, 2, 2097150)]
-        public void GenerateFileOddFileSizeBytesAndOddBuffer(string text, long FileSizeBytes, long bufferSize, long expected)
+        public void GenerateFile(string text, long FileSizeBytes, long bufferSize, long expected)
         {
             var file = new FileUtil.FileGenerator(AppDomain.CurrentDomain.BaseDirectory, FileSizeBytes, bufferSize);
             file.GenerateFile(text);
